@@ -11,14 +11,14 @@ plt.style.use('fivethirtyeight')
 
 # %%
 
-titles = pd.read_csv(r'titles.csv', sep=',')
-# credits = pd.read_csv(r'credits.csv', sep=',')
-print(titles)
+c = pd.read_csv(r'titles.csv', sep=',')
+credits = pd.read_csv(r'credits.csv', sep=',')
+print(c)
 # print(credits)
 # %%
 
-# c = pd.merge(titles,credits)
-# c
+titles = pd.merge(c,credits)
+c
 
 # %%
 
