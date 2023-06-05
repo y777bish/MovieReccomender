@@ -1,12 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import csv
 
 app = Flask(__name__, template_folder='E:/reposD/MovieReccomender/views')
 app.debug = True
 
-@app.route('/')
+@app.route('/', method=['GET', 'POST'])
 
 def index():
+    if request.method == 'POST':
+        selected_value = request.form.get('my-select')
+        return f'Selected value: {selected_value}'
+
     enum_data = read_csv()
     return render_template('index.html', enum_data=enum_data)
 
