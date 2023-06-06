@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
 import csv
 
-app = Flask(__name__, template_folder='E:/reposD/MovieReccomender/views')
+app = Flask(__name__, template_folder=r'C:\projektSSI\MovieReccomender\views')
 app.debug = True
 
-@app.route('/', method=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 
 def index():
     if request.method == 'POST':
@@ -16,11 +16,16 @@ def index():
 
 def read_csv():
     enum_data = []  # This list will store the extracted enum values
-    with open('titles.csv', 'r', encoding='utf-8') as file:
+    with open('movies.csv', 'r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
             enum_data.append(row['title'])  # Replace 'title' with the actual column name in your CSV file
     return enum_data
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run()
