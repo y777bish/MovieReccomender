@@ -4,7 +4,7 @@ import csv
 app = Flask(__name__, template_folder='E:/reposD/MovieReccomender/views')
 app.debug = True
 
-@app.route('/', method=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 
 def index():
     if request.method == 'POST':
