@@ -12,8 +12,8 @@ from matplotlib.pyplot import imread
 import codecs
 from IPython.display import HTML
 
-movies = pd.read_csv(r"C:\projektSSI\MovieReccomender\movies.csv")
-credits = pd.read_csv(r"C:\projektSSI\MovieReccomender\credits.csv")
+movies = pd.read_csv(r"titles.csv")
+credits = pd.read_csv(r"credits.csv")
 
 # movies['genres'] = movies['genres'].str.strip('[]').str.replace(' ','').str.replace("'",'')
 # movies['genres'] = movies['genres'].str.split(',')
@@ -60,15 +60,14 @@ genreList[:10]  # now we have a list with unique genres
 
 
 def binary(genre_list):
-    binaryList = []
+    # binaryList = []
 
-    for genre in genreList:
-        if genre in genre_list:
-            binaryList.append(1)
-        else:
-            binaryList.append(0)
-
-    return binaryList
+    # for genre in genreList:
+    #     if genre in genre_list:
+    #         binaryList.append(1)
+    #     else:
+    #         binaryList.append(0)
+    return [1 if genre in genre_list else 0 for genre in genreList]
 
 
 movies['genres_bin'] = movies['genres'].apply(lambda x: binary(x))
@@ -78,18 +77,15 @@ movies['genres_bin'].head()
 #     #string ChoosenFilm
 #     #
 
-
-
-
-def find_similar_movie(movie_title):
-    movies = pd.read_csv('movies.csv')
+movies = pd.read_csv('titles.csv')
+def similar_by(movies, movie_title, column_name):
     selected_movie_data = movies.loc[movies['title'] == movie_title]
 
     if selected_movie_data.empty:
         return None
 
-    genres = selected_movie_data.iloc[0]['genres']
-    similar_movies = movies[movies['genres'] == genres]
+    genres = selected_movie_data.iloc[0][column_name]
+    similar_movies = movies[movies[column_name] == genres]
     similar_movies = similar_movies[similar_movies['title'] != movie_title]
 
 
@@ -98,13 +94,13 @@ def find_similar_movie(movie_title):
 
     return similar_movies['title'].tolist()
 
-movie_title = "Big Daddy"
-similar_movies = find_similar_movie(movie_title)
+movie_title = "Masha and the Bear"
+common_genre = similar_by(movies, movie_title, "genres")
+print(common_genre)
 
-
-if similar_movies:
+if common_genre:
     print(f"Similar movies to '{movie_title}':")
-    for movie in similar_movies:
+    for movie in common_genre:
         print(movie)
 else:
     print(f"No similar movies found for '{movie_title}'")
