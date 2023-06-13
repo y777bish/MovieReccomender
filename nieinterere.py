@@ -58,6 +58,10 @@ def binary(genre_list):
     return [1 if genre in genre_list else 0 for genre in genreList]
 
 #%%
+movies = movies.merge(credits,left_on='id',right_on='movie_id',how='left')
+movies = movies[['id','original_title','genres','cast','vote_average','director','keywords']]
+
+# %%
 
 movies['genres_bin'] = movies['genres'].apply(lambda x: binary(x))
 movies['genres_bin'].head()
@@ -100,7 +104,7 @@ else:
 
 # %%
 
-actor_counts = credits['person_id'].value_counts()
+actor_counts = credits['name'].value_counts()
 
 # Wybranie 14 najczęściej występujących aktorów
 top_actors = actor_counts.head(10)
