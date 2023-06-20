@@ -16,6 +16,7 @@ from IPython.display import HTML
 from wordcloud import WordCloud, STOPWORDS
 import nltk
 nltk.download('punkt')
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 # %%
@@ -77,6 +78,8 @@ movies['genres'] = movies['genres'].str.strip('[]').str.replace(' ','').str.repl
 movies['genres'] = movies['genres'].str.split(',')
 # %%
 
+
+# ------>WYŚWIETLANIE TOP GENRES<-------------
 plt.subplots(figsize=(12,10))
 list1 = []
 for i in movies['genres']:
@@ -88,6 +91,8 @@ plt.title('Top Genres')
 plt.show()
 # %%
 
+
+# -------> Formatowanie movies oraz połączenie movies['genres'] i movies.index <-----------
 for i,j in zip(movies['genres'],movies.index):
     list2=[]
     list2=i
@@ -97,14 +102,23 @@ movies['genres'] = movies['genres'].str.strip('[]').str.replace(' ','').str.repl
 movies['genres'] = movies['genres'].str.split(',')
 # %%
 
+
+
+# -------> Dodawanie kategorii filmów do listy genreList <-----------
 genreList = []
+top_genres = pd.Series(list1).value_counts()[:10].index.tolist()
+
 for index, row in movies.iterrows():
     genres = row["genres"]
-    
+
     for genre in genres:
-        if genre not in genreList:
+        if genre in top_genres:
             genreList.append(genre)
-genreList[:10] #now we have a list with unique genres
+
+genreList = list(set(genreList))  # Usunięcie powtórzeń za pomocą zbioru i konwersja z powrotem na listę
+print(genreList)
+
+
 # %%
 
 def binary(genre_list):
@@ -118,15 +132,19 @@ def binary(genre_list):
     
     return binaryList
 # %%
-
+# -----> Dodawanie nowej kolumny do ramki danych movies o nazwie 'genres_bin' <-------
 movies['genres_bin'] = movies['genres'].apply(lambda x: binary(x))
 movies['genres_bin'].head()
 # %%
 
+
+# -----> Formatowanie kolumny 'cast' <---------
 movies['cast'] = movies['cast'].str.strip('[]').str.replace(' ','').str.replace("'",'').str.replace('"','')
 movies['cast'] = movies['cast'].str.split(',')
 # %%
 
+
+# ------> Tworzenie oraz wyświetlanie wykresu 'Actors with highest appearance' <----------
 plt.subplots(figsize=(12,10))
 list1=[]
 for i in movies['cast']:
@@ -138,6 +156,8 @@ plt.title('Actors with highest appearance')
 plt.show()
 # %%
 
+
+# ----> Połączenie dwóch sekcji danych w jedną, formatowanie 'cast', ponowne połączenie oraz formatowanie <----------
 for i,j in zip(movies['cast'],movies.index):
     list2 = []
     list2 = i[:4]
@@ -152,29 +172,40 @@ for i,j in zip(movies['cast'],movies.index):
 movies['cast']=movies['cast'].str.strip('[]').str.replace(' ','').str.replace("'",'')
 # %%
 
+
+
+# -----> Dodawanie danych do listy CastList(lista aktorów) <---------
 castList = []
+top_casts = pd.Series(list1).value_counts().drop('').index.tolist()[:10]
+top_casts = [actor.replace('Jr.', 'Robert Downey Jr.') for actor in top_casts]
+print(top_casts)
+
 for index, row in movies.iterrows():
     cast = row["cast"]
-    
-    for i in cast:
-        if i not in castList:
-            castList.append(i)
-# %%
 
+    for i in cast:
+        if i in top_casts:
+            castList.append(i)
+
+
+# Definicja funkcji 'binary' z poprawioną nazwą parametru
 def binary(cast_list):
     binaryList = []
-    
-    for genre in castList:
-        if genre in cast_list:
+
+    for actor in top_casts:
+        if actor in cast_list:
             binaryList.append(1)
         else:
             binaryList.append(0)
-    
-    return binaryList
-# %%
 
+    return binaryList
+
+
+# Dodanie nowej kolumny 'cast_bin' do ramki danych 'movies'
 movies['cast_bin'] = movies['cast'].apply(lambda x: binary(x))
 movies['cast_bin'].head()
+
+
 # %%
 
 def xstr(s):
@@ -184,7 +215,12 @@ def xstr(s):
 movies['director'] = movies['director'].apply(xstr)
 # %%
 
+
+# ------> Tworzenie wykresu 'Directors with highest movies' <-------
 plt.subplots(figsize=(12,10))
+list1=[]
+for i in movies['director']:
+    list1.extend(i)
 ax = movies[movies['director']!=''].director.value_counts()[:10].sort_values(ascending=True).plot.barh(width=0.9,color=sns.color_palette('muted',40))
 for i, v in enumerate(movies[movies['director']!=''].director.value_counts()[:10].sort_values(ascending=True).values): 
     ax.text(.5, i, v,fontsize=12,color='white',weight='bold')
@@ -192,27 +228,35 @@ plt.title('Directors with highest movies')
 plt.show()
 # %%
 
-directorList=[]
-for i in movies['director']:
-    if i not in directorList:
-        directorList.append(i)
-# %%
 
+# ------> Tworzenie listy 'director' <--------
+top_directors = movies['director'].explode().value_counts().drop('').index[:10].tolist()
+directorList = []
+print(top_directors)
+for index, row in movies.iterrows():
+    cast = row["director"]
+    for i in cast:
+        if i in top_directors:
+            directorList.append(i)
+
+
+# Tworzenie soft set dla directorList
 def binary(director_list):
-    binaryList = []  
-    for direct in directorList:
+    binaryList = []
+    for direct in top_directors:
         if direct in director_list:
             binaryList.append(1)
         else:
             binaryList.append(0)
     return binaryList
-# %%
 
+
+# Dodanie nowej kolumny do ramki danych 'movies' o nazwie 'director_bin'
 movies['director_bin'] = movies['director'].apply(lambda x: binary(x))
 movies.head()
 
 # %%
-
+# ------> Tworzenie oraz wyświetlanie wykresu <------
 plt.subplots(figsize=(12,12))
 stop_words = set(stopwords.words('english'))
 stop_words.update(',',';','!','?','.','(',')','$','#','+',':','...',' ','')
@@ -248,20 +292,22 @@ for i,j in zip(movies['keywords'],movies.index):
 movies['keywords'] = movies['keywords'].str.strip('[]').str.replace(' ','').str.replace("'",'')
 movies['keywords'] = movies['keywords'].str.split(',')
 # %%
-
+top_words = movies['keywords'].explode().value_counts().drop('').index[:10].tolist()
 words_list = []
+print(top_words)
 for index, row in movies.iterrows():
-    genres = row["keywords"]
+    keywords = row["keywords"]
     
-    for genre in genres:
-        if genre not in words_list:
-            words_list.append(genre)
+    for keyword in keywords:
+        if keyword in top_words:
+            words_list.append(keywords)
 # %%
+# ------> Tworzenie soft set dla kategorii filmów <------
 
 def binary(words):
     binaryList = []
-    for genre in words_list:
-        if genre in words:
+    for keyword in top_words:
+        if keyword in words_list:
             binaryList.append(1)
         else:
             binaryList.append(0)
@@ -273,19 +319,31 @@ movies = movies[(movies['vote_average']!=0)] #removing the movies with 0 score a
 movies = movies[movies['director']!='']
 # %%
 
-def Similarity(movieId):
-    a = movies.iloc[movieId]
-    print(a)
-    genA = a['genres_bin']
-    scorA = a['cast_bin']
-    directA = a['director_bin']
-    wordsA = a['words_bin']
-    
-    print(genA)
-    print(scorA)
-    print(directA)
-    print(wordsA)
 
-# %%
 
-Similarity(285)
+# ------> Wyświetlanie danych <------
+# ------> Zmiana 14.06.2023 - Nie musimy wprowadzać id, tylko nazwę <----------
+def Soft_Set(row):
+    genA = row['genres_bin']
+    scorA = row['cast_bin']
+    directA = row['director_bin']
+    wordsA = row['words_bin']
+    return [genA, scorA, directA, wordsA]
+if 'Soft-Set' not in movies.columns:
+    movies['Soft-Set'] = movies.apply(Soft_Set, axis=1)
+
+
+def find_most_similar_film(query_film, movies):
+    distances = []
+
+    for _, row in movies.iterrows():
+        soft_set = row['Soft-Set']
+        distance = np.sqrt(np.sum(np.square(np.array(soft_set) - np.array(query_film))))
+        distances.append(distance)
+
+    nearest_indices = np.argsort(distances)[0:2]
+    similar_films = movies.loc[nearest_indices, 'original_title'].tolist()
+
+    return similar_films
+query_film = movies.loc[movies['original_title'] == 'Grease', 'Soft-Set'].values[0]
+print(find_most_similar_film(query_film, movies))

@@ -2,9 +2,12 @@
 
 {% block content %}
     <h1>{% block title %} Movie Reccomender {% endblock %}</h1>
-    <select class="form-select">
-        {% for value in enum_data %}
-            <option value="{{ value }}">{{ value }}</option>
-        {% endfor %}
-    </select>
+    <form method="POST">
+        <select name="my-select" class="form-select">
+            {% for value in enum_data %}
+                <option value="{{ value }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Generuj</button>
+    </form>
 {% endblock %}
