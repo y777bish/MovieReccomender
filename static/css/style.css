@@ -1,10 +1,45 @@
-h1 {
-    border: 2px #eee solid;
-    color: brown;
-    text-align: center;
-    padding: 20px 10px 20px 10px;
+body {
+    background-color: #FFF8EA;
 }
 
-.form-select {
+.generuj-button {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    margin: 0% 40% 2% 40%;
+}
+
+.fw-bold {
+    font-weight: 700!important;
+}
+
+form {
+    text-align: center;
+    align-items: center;
+    margin-bottom: 2%;
+}
+
+.solution-h {
     text-align: center;
 }
+
+.solution-h2 {
+    margin: 3rem;
+    font-weight: 300;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+    animation-duration: 2s;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }

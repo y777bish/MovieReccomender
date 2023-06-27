@@ -1,6 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,12 +17,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-    <!-- <title>{% block title %}Movie Reccomender{% endblock %}</title> -->
-    <title>Movie Reccomender</title>
-
-  </head>
-  <body>
-
+    <title>Solution</title>
+</head>
+<body>
     <nav class="navbar navbar-expand-md navbar-light" style="background-color: #FAEDCD;">
         <a class="navbar-brand" href="{{ url_for('index')}}">MovieReccomender</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,35 +34,20 @@
         </div>
     </nav>
 
-    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
-        <div class="col-md-6 p-lg-5 mx-auto my-5">
-            <h1 class="display-3 fw-bold">Welcome to MovieReccomender!</h1>
-            <h3 class="fw-normal text-muted mb-3">Search for a similar movie in minutes c:</h3>
-            <div class="d-flex gap-3 justify-content-center lead fw-normal"></div>
-        </div>
-        <div class="product-device shadow-sm d-none d-md-block"></div>
-        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
-    </div>
-
     <div>
-        <form method="POST">
-            <select class="js-example-responsive" style="width: 30%" id="movies-list" name="my-select" data-enum-data="{{ enum_data | tojson }}">
-                {% for value in enum_data %}
-                    <option value="{{ value }}">{{ value }}</option>
-                {% endfor %}
-            </select>
-            <div style="margin-top: 3rem">
-                <button id="similar-generation" type="submit" class="btn btn-outline-secondary d-flex justify-content-center generuj-button" type="submit" formaction="{{ url_for('solution')}}">Generate</button>
-            </div>
-        </form>
+        <h1 class="display-2 fw-bold solution-h" style="margin: 1% 2%">Similar movies to</h1>
+        <h2 class="fw-bold solution-h2 justify-content-center" style="margin: 1% 10%; font-size: 3rem;">{{selected_value}}:</h2>
+        <div id="movies-container">
+            {% for movie in generate_data %}
+            <h3 class="solution-h fadeIn">{{ movie }}</h3>
+            {% endfor %}
+        </div>
     </div>
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="/static/functions.js"></script>
-
-  </body>
+</body>
 </html>
